@@ -1,0 +1,10 @@
+{
+  "name": "grief-therapist",
+  "version": "0.1.0",
+  "description": "MVP grief counseling companion app",
+  "scripts": {
+    "start": "node src/worker.js",
+    "test": "node tests/test_prompts.js"
+  },
+  "type": "module"
+}

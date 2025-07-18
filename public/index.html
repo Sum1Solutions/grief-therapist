@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grief Counselor Chat</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; }
+    #messages { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 0.5rem; }
+    .msg { margin: 0.5rem 0; }
+    input, button { padding: 0.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Grief Counseling Companion</h1>
+  <div id="messages"></div>
+  <form id="chatForm">
+    <input id="chatInput" type="text" placeholder="Type your feelings..." required />
+    <button type="submit">Send</button>
+  </form>
+
+  <script>
+    const messagesDiv = document.getElementById('messages');
+    const chatInput = document.getElementById('chatInput');
+    const form = document.getElementById('chatForm');
+
+    function appendMessage(text, from) {
+      const p = document.createElement('p');
+      p.className = 'msg';
+      p.textContent = `${from}: ${text}`;
+      messagesDiv.appendChild(p);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = chatInput.value.trim();
+      if (!message) return;
+      appendMessage(message, 'You');
+      chatInput.value = '';
+      try {
+        const resp = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+        const data = await resp.json();
+        appendMessage(data.response, 'Bot');
+      } catch (err) {
+        appendMessage('Error: ' + err.message, 'Bot');
+      }
+    });
+  </script>
+</body>
+</html>
