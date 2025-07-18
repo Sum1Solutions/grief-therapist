@@ -1,13 +1,27 @@
 import http from 'http';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const PORT = process.env.PORT || 8787;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+if (!OPENAI_API_KEY) {
+  console.error('ERROR: OPENAI_API_KEY environment variable is not set');
+  process.exit(1);
+}
 
 const crisisKeywords = ['suicide', "can't go on", 'kill myself'];
 
 async function handleChat(message) {
   if (!OPENAI_API_KEY) {
-    throw new Error('Missing OPENAI_API_KEY');
+    console.error('ERROR: OPENAI_API_KEY is not set');
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    return res.end(JSON.stringify({ 
+      error: 'Server configuration error',
+      details: 'OPENAI_API_KEY is not properly configured'
+    }));
   }
 
   const crisisDetected = crisisKeywords.some(k => message.toLowerCase().includes(k));
